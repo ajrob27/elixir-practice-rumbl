@@ -1,1 +1,3 @@
-<div><%= @user.name %></div>
+<h1>Showing User</h1>
+<div><b><%= first_name(@user) %></b> (<%= @user.id %>)</div>
+<div><%= link "View all", to: user_path(@conn, :index) %></div>
