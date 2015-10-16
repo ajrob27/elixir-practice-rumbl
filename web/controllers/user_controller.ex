@@ -1,6 +1,6 @@
 defmodule Rumbl.UserController do
   use Rumbl.Web, :controller
-  alias Rumble.User
+  alias Rumbl.User
 
   def new(conn, _params) do
     changeset = User.changeset(%User{})
