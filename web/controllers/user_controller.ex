@@ -1,7 +1,7 @@
 defmodule Rumbl.UserController do
   use Rumbl.Web, :controller
   # Why not says "plug :authenticate" to cover all actions, include :new?
-  plug :authenticate when action in [:index, :show, :new]
+  plug :authenticate when action in [:index, :show]
   alias Rumbl.User
 
   def create(conn, %{"user" => user_params}) do
@@ -9,6 +9,7 @@ defmodule Rumbl.UserController do
     case Repo.insert(changeset) do
       {:ok, user} ->
         conn
+        |> Rumbl.Auth.login(user)
         |> put_flash(:info, "#{user.name} created!")
         |> redirect(to: user_path(conn, :index))
       {:error, changeset} ->
