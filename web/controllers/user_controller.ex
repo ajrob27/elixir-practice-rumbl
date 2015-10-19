@@ -1,5 +1,7 @@
 defmodule Rumbl.UserController do
   use Rumbl.Web, :controller
+  # Why not says "plug :authenticate" to cover all actions, include :new?
+  plug :authenticate when action in [:index, :show, :new]
   alias Rumbl.User
 
   def create(conn, %{"user" => user_params}) do
@@ -15,7 +17,7 @@ defmodule Rumbl.UserController do
   end
 
   def index(conn, _params) do
-    users = Repo.all(Rumbl.User)
+    users = Repo.all(User)
     render conn, "index.html", users: users
   end
 
@@ -27,5 +29,16 @@ defmodule Rumbl.UserController do
   def show(conn, %{"id" => id}) do
     user = Repo.get(Rumbl.User, id)
     render conn, "show.html", user: user
+  end
+
+  defp authenticate(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to access that page")
+      |> redirect(to: page_path(conn, :index))
+      |> halt()
+    end
   end
 end
